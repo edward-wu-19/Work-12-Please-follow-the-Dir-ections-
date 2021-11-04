@@ -3,14 +3,31 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <string.h>
 
-int main(){
-    DIR *pDir = opendir("./");
+int main(int argc, char *argv[]){
+    char folderName[100];
+
+    if (argc > 1){
+        strcpy(folderName, argv[1]);
+    }
+    else if (argc == 1){
+        printf("Please enter the name of the directory\n");
+        fgets(folderName, 100, stdin);
+        *strchr(folderName, '\n') = '\0';
+    }
+
+    DIR *pDir = opendir(folderName);
+
+    if (pDir == NULL){
+        printf("%s", strerror(errno));
+    }
 
     struct dirent *dir;
     dir = readdir(pDir);
 
-    printf("Statistics for Directory: .\n\n");
+    printf("Statistics for Directory: %s\n\n", folderName);
 
     unsigned long total_size = 0;
 
