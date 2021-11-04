@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <string.h>
 
+void return_info(DIR *pDir, char folderName[100]);
+
 int main(int argc, char *argv[]){
     char folderName[100];
 
@@ -13,17 +15,26 @@ int main(int argc, char *argv[]){
         strcpy(folderName, argv[1]);
     }
     else if (argc == 1){
-        printf("Please enter the name of the directory\n");
+        printf("Please enter the name of the directory\n> ");
         fgets(folderName, 100, stdin);
         *strchr(folderName, '\n') = '\0';
     }
+    printf("\n");
 
     DIR *pDir = opendir(folderName);
 
-    if (pDir == NULL){
-        printf("%s", strerror(errno));
+    if (pDir == 0){
+        printf("Error: %s\n\n", strerror(errno));
+        return 0;
     }
 
+    return_info(pDir, folderName);
+
+    return 0;
+
+}
+
+void return_info(DIR *pDir, char folderName[100]){
     struct dirent *dir;
     dir = readdir(pDir);
 
@@ -51,5 +62,4 @@ int main(int argc, char *argv[]){
 
     closedir(pDir);
     printf("\n\n");
-    return 0;
 }
